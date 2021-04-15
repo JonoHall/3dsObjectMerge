@@ -63,7 +63,16 @@ function combineObjects groups =
 					
 				if (j + 1) > gArray.count then j = 1
 			)
-			gArray[j].name = g.key
+			
+			parentName = g.key as String
+			
+			if allControls.appendText != undefined do
+			(
+				appendText = allControls.appendText.text
+				parentName = parentName + " [" + appendText + "]"
+			)
+			gArray[j].name = parentName
+			
 			orig_parent_name = g.key as string
 			setUserProp gArray[j] "orig_parent_name" orig_parent_name
 		)
@@ -78,6 +87,8 @@ rollout allControls "Combine Objects" (
 	label objectCount align:#left style_sunkenedge:true height:18 width:130
 	label lab3 "Final Objects:" align:#left
 	label groupCount align:#left style_sunkenedge:true height:18 width:130
+	label lab4 "Append the following to the final object name (Optional):" align:#left offset:[0,10]
+	edittext appendText "Text:" height:18
 	button confirm "Confirm" width:120 height:30 align:#left offset:[0,16]
 	button close_btn "Cancel" width:120 height:30 offset:[140,-35] align:#left
 	on confirm pressed do
