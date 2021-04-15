@@ -1,12 +1,32 @@
-groups = #()
+groups = Dictionary()
 
 allObjects = $*
 for OBJ in allObjects do(
 	objectName = filterString OBJ.name "["
-	objectName = objectName[1]
-	appendIfUnique groups objectName
+	objectName = trimRight objectName[1] as Name
+	
+	if groups[objectName] == undefined then groups[objectName] = #()
+	appendIfUnique groups[objectName] OBJ
 )
-for groupName in groups do(
-	nodeCollection = execute ("$'"+groupName+"'*")
-	group nodeCollection name:groupName
+
+for g in groups do(
+	gArray = g.value as Array
+	j = 1
+	count = gArray.count
+
+	undo off
+	(
+		while gArray.count > 1 do
+		(				
+			if classof gArray[j] != Editable_Poly then converttopoly gArray[j]
+				
+			polyop.attach gArray[j] gArray[j+1]
+			deleteItem gArray (j+1)
+				
+			j += 1
+				
+			if (j + 1) > gArray.count then j = 1
+			
+		)
+	)
 )
