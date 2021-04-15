@@ -62,6 +62,7 @@ for g in groups do(
 				
 			if (j + 1) > gArray.count then j = 1
 		)
+		/* Remove the now redundant ID from the parent name */
 		gArray[j].name = g.key
 	)
 )
