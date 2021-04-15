@@ -1,8 +1,101 @@
+try(destroyDialog ProgressBarTool.instUI;ProgressBarTool.instUI=undefined)catch()
+
+--Structure containing the tool
+struct ProgressBarTool
+(
+	/********************************************************
+	Variables
+	********************************************************/
+	instUI = undefined,
+	message = "",
+	count = 0,
+	value = 0,
+	
+	/********************************************************
+	Functions
+	********************************************************/
+	fn SetProgress value:0 count:0 message:"" =
+	(		
+		ProgressBarTool.count = count
+		ProgressBarTool.value = value
+		ProgressBarTool.message = message
+
+		--Update the UI
+		if instUI != undefined do 
+		(
+			instUI.UpdateProgress()
+		)
+	),
+	
+	/********************************************************
+	Rollouts
+	********************************************************/
+	fn UI =
+	(
+		rollout ProgressBarToolRO "Progress..."
+		(
+			dotnetcontrol uiMessage "Label" width:(ProgressBarToolRO.width-28) align:#center offset:[0,5]
+			progressbar uiProgressBar color:(color 20 150 240) width:(ProgressBarToolRO.width-28) height:12  align:#center
+			dotnetcontrol uiIterations "Label" width:(ProgressBarToolRO.width-28) align:#center
+			button uiOk "OK" width:100 align:#right enabled:false
+						
+			fn StyleLabel ctrl:undefined align:#left =
+			(	
+				colMax = (colorMan.getColor #background)*255
+				colorClass = dotNetClass "system.drawing.color"
+				ctrl.Font = dotNetObject "System.Drawing.Font" "Verdana" 11 (dotNetClass "System.Drawing.FontStyle").Regular (dotNetClass "System.Drawing.GraphicsUnit").Pixel
+				ctrl.Backcolor = colMax = colorClass.fromArgb colMax[1] colMax[2] colMax[3]
+				ctrl.Forecolor = ctrl.Forecolor.fromARGB 240 240 240
+				ctrl.TextAlign = ctrl.TextAlign.TopLeft
+			)
+
+			fn UpdateProgress =
+			(
+				uiMessage.text = ProgressBarTool.message
+				uiProgressBar.value = 100.0 * ProgressBarTool.value / ProgressBarTool.count as float
+				uiIterations.text = ProgressBarTool.value as string + "/" + ProgressBarTool.count as string
+				windows.processPostedMessages()
+
+				uiOk.enabled = ProgressBarTool.value == ProgressBarTool.count
+			)
+			
+			on uiOk pressed do
+			(
+				try(destroyDialog ::ProgressBarToolRO)catch()
+			)
+			
+			on ProgressBarToolRO open do
+			(
+				StyleLabel ctrl:uiMessage
+				StyleLabel ctrl:uiIterations
+			)
+		)
+	),
+	
+	fn run=
+	(
+		if instUI==undefined then
+		(
+			instUI=UI()
+			createDialog instUI width:500 style:#(#style_titlebar, #style_border)
+		)else
+		(
+			destroyDialog instUI
+			instUI=undefined
+		)
+	),
+
+	fn getRollouts = #(ui())
+)
+
 /* Create an associated array of all objects or "DataPair" */ 
 groups = Dictionary()
 
 /* Get all objects */
 allObjects = $*
+
+totalIterations = 0
+totalObjects = allObjects.count
 
 for OBJ in allObjects do(
 	
@@ -43,10 +136,19 @@ Source: https://forums.cgsociety.org/t/fast-attach-algorithm/1459667
 */
 function combineObjects groups =
 (
+	appendText = ""
+	print allControls.appendText.text
+	if allControls.appendText.text != "" do
+	(
+		appendText = allControls.appendText.text as String
+		appendText = " [" + appendText + "]"
+	)
+	print appendText
 	for g in groups do(
 		gArray = g.value as Array
 		j = 1
 		count = gArray.count
+		currObjName = gArray[j].name
 
 		/* Turns undo off for performance enhancement */
 		undo off
@@ -62,19 +164,19 @@ function combineObjects groups =
 				j += 1
 					
 				if (j + 1) > gArray.count then j = 1
+				totalIterations += 1
 			)
 			
-			parentName = g.key as String
+			key = g.key as String
+			parentName = key + appendText
 			
-			if allControls.appendText != undefined do
-			(
-				appendText = allControls.appendText.text
-				parentName = parentName + " [" + appendText + "]"
-			)
 			gArray[j].name = parentName
 			
 			orig_parent_name = g.key as string
 			setUserProp gArray[j] "orig_parent_name" orig_parent_name
+			
+			ProgressBarTool.SetProgress value:totalIterations count:totalObjects message:currObjName
+			
 		)
 	)
 )
@@ -93,14 +195,16 @@ rollout allControls "Combine Objects" (
 	button close_btn "Cancel" width:120 height:30 offset:[140,-35] align:#left
 	on confirm pressed do
 		(
-			combineObjects groups
 			DestroyDialog(allControls)
+			ProgressBarTool = ProgressBarTool()
+			ProgressBarTool.run()
+			combineObjects groups
 		)
 	on close_btn pressed do DestroyDialog(allControls)
 )
 
 createDialog allControls width:600
 difference = allObjects.count - groups.count
-print difference
+totalObjects = difference
 allControls.groupCount.text = groups.count as String
 allControls.objectCount.text = difference as String
