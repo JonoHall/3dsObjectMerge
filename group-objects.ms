@@ -61,7 +61,7 @@ for g in groups do(
 			j += 1
 				
 			if (j + 1) > gArray.count then j = 1
-			
 		)
+		gArray[j].name = g.key
 	)
 )
