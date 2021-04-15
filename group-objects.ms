@@ -35,33 +35,59 @@ for OBJ in allObjects do(
 	append groups[objectName] OBJ
 )
 
+
+
 /* 
 Loop through our new associated array and group all the values (objects) in each key 
 
 Credit: ivanisavich
 Source: https://forums.cgsociety.org/t/fast-attach-algorithm/1459667
 */
+function combineObjects groups =
+(
+	for g in groups do(
+		gArray = g.value as Array
+		j = 1
+		count = gArray.count
 
-for g in groups do(
-	gArray = g.value as Array
-	j = 1
-	count = gArray.count
-
-	/* Turns undo off for performance enhancement */
-	undo off
-	(
-		while gArray.count > 1 do
+		/* Turns undo off for performance enhancement */
+		undo off
 		(
-			/* Convert to Editable Poly if it's not already */
-			if classof gArray[j] != Editable_Poly then converttopoly gArray[j]
-				
-			polyop.attach gArray[j] gArray[j+1]
-			deleteItem gArray (j+1)
-				
-			j += 1
-				
-			if (j + 1) > gArray.count then j = 1
+			while gArray.count > 1 do
+			(
+				/* Convert to Editable Poly if it's not already */
+				if classof gArray[j] != Editable_Poly then converttopoly gArray[j]
+					
+				polyop.attach gArray[j] gArray[j+1]
+				deleteItem gArray (j+1)
+					
+				j += 1
+					
+				if (j + 1) > gArray.count then j = 1
+			)
+			gArray[j].name = g.key
 		)
-		gArray[j].name = g.key
 	)
 )
+
+
+rollout allControls "Combine Objects" (
+	
+	label lab1 "You are about to group up some objects. This CANNOT be undone." align:#left offset:[0,10]
+	label lab2 "Sub-objects:" align:#left offset:[0,10]
+	label objectCount align:#left style_sunkenedge:true height:18 width:130
+	label lab3 "Final Objects:" align:#left
+	label groupCount align:#left style_sunkenedge:true height:18 width:130
+	button confirm "Confirm" width:120 height:30 align:#left offset:[0,16]
+	button close_btn "Cancel" width:120 height:30 offset:[140,-35] align:#left
+	on confirm pressed do
+		(
+			combineObjects groups
+			DestroyDialog(allControls)
+		)
+	on close_btn pressed do DestroyDialog(allControls)
+)
+
+createDialog allControls width:600
+allControls.groupCount.text = groups.count as String
+allControls.objectCount.text = allObjects.count as String
