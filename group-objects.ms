@@ -64,6 +64,8 @@ function combineObjects groups =
 				if (j + 1) > gArray.count then j = 1
 			)
 			gArray[j].name = g.key
+			orig_parent_name = g.key as string
+			setUserProp gArray[j] "orig_parent_name" orig_parent_name
 		)
 	)
 )
