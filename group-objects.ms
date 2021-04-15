@@ -35,8 +35,6 @@ for OBJ in allObjects do(
 	append groups[objectName] OBJ
 )
 
-
-
 /* 
 Loop through our new associated array and group all the values (objects) in each key 
 
@@ -74,7 +72,7 @@ function combineObjects groups =
 rollout allControls "Combine Objects" (
 	
 	label lab1 "You are about to group up some objects. This CANNOT be undone." align:#left offset:[0,10]
-	label lab2 "Sub-objects:" align:#left offset:[0,10]
+	label lab2 "Sub-objects to be merged:" align:#left offset:[0,10]
 	label objectCount align:#left style_sunkenedge:true height:18 width:130
 	label lab3 "Final Objects:" align:#left
 	label groupCount align:#left style_sunkenedge:true height:18 width:130
@@ -89,5 +87,7 @@ rollout allControls "Combine Objects" (
 )
 
 createDialog allControls width:600
+difference = allObjects.count - groups.count
+print difference
 allControls.groupCount.text = groups.count as String
-allControls.objectCount.text = allObjects.count as String
+allControls.objectCount.text = difference as String
