@@ -142,7 +142,7 @@ function combineObjects groups =
 		appendText = allControls.appendText.text as String
 		appendText = " [" + appendText + "]"
 	)
-	print appendText
+
 	for g in groups do(
 		gArray = g.value as Array
 		j = 1
@@ -164,7 +164,7 @@ function combineObjects groups =
 					
 				if (j + 1) > gArray.count then j = 1
 				totalIterations += 1
-				ProgressBarTool.SetProgress value:totalIterations count:totalObjects message:currObjName
+				ProgressBarTool.SetProgress value:totalIterations count:totalObjects message:("Current group: "+currObjName)
 				/* sleep 1 */
 			)
 			
@@ -179,7 +179,6 @@ function combineObjects groups =
 	)
 )
 
-
 rollout allControls "Combine Objects" (
 	
 	label lab1 "You are about to group up some objects. This CANNOT be undone." align:#left offset:[0,10]
@@ -188,7 +187,7 @@ rollout allControls "Combine Objects" (
 	label lab3 "Final Objects:" align:#left
 	label groupCount align:#left style_sunkenedge:true height:18 width:130
 	label lab4 "Append the following to the final object name (Optional):" align:#left offset:[0,10]
-	edittext appendText "Text:" height:18
+	edittext appendText "Text:" height:20
 	button confirm "Confirm" width:120 height:30 align:#left offset:[0,16]
 	button close_btn "Cancel" width:120 height:30 offset:[140,-35] align:#left
 	on confirm pressed do
@@ -202,8 +201,15 @@ rollout allControls "Combine Objects" (
 	on close_btn pressed do DestroyDialog(allControls)
 )
 
-createDialog allControls width:600
 difference = allObjects.count - groups.count
-totalObjects = difference
-allControls.groupCount.text = groups.count as String
-allControls.objectCount.text = difference as String
+
+if(difference > 0) then
+	(
+		createDialog allControls width:600
+		totalObjects = difference
+		allControls.groupCount.text = groups.count as String
+		allControls.objectCount.text = difference as String
+		
+	) else (
+		messageBox "Could not find any matching objects to group together." title:"No matching objects found"
+	)
