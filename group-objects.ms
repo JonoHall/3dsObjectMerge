@@ -137,7 +137,6 @@ Source: https://forums.cgsociety.org/t/fast-attach-algorithm/1459667
 function combineObjects groups =
 (
 	appendText = ""
-	print allControls.appendText.text
 	if allControls.appendText.text != "" do
 	(
 		appendText = allControls.appendText.text as String
@@ -165,6 +164,8 @@ function combineObjects groups =
 					
 				if (j + 1) > gArray.count then j = 1
 				totalIterations += 1
+				ProgressBarTool.SetProgress value:totalIterations count:totalObjects message:currObjName
+				/* sleep 1 */
 			)
 			
 			key = g.key as String
@@ -174,9 +175,6 @@ function combineObjects groups =
 			
 			orig_parent_name = g.key as string
 			setUserProp gArray[j] "orig_parent_name" orig_parent_name
-			
-			ProgressBarTool.SetProgress value:totalIterations count:totalObjects message:currObjName
-			
 		)
 	)
 )
@@ -198,6 +196,7 @@ rollout allControls "Combine Objects" (
 			DestroyDialog(allControls)
 			ProgressBarTool = ProgressBarTool()
 			ProgressBarTool.run()
+			ProgressBarTool.SetProgress value:0 count:totalObjects message:"Initializing"
 			combineObjects groups
 		)
 	on close_btn pressed do DestroyDialog(allControls)
