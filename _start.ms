@@ -1,4 +1,4 @@
-FileIn("progress-bar.ms")
+FileIn("progress-bar\progress-bar.ms")
 FileIn("dialog-box.ms")
 FileIn("group-objects.ms")
 /* Create an associated array of all objects or "DataPair" */ 
