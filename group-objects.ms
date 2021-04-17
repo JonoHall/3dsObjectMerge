@@ -22,20 +22,20 @@ function combineObjects groups =
 		
 		count = gArray.count
 		currObjName = gArray[j].name
-
-		/* Turns undo off for performance enhancement */
+		
+		/* Turns undo off for performance optimisation */
 		undo off
 		(
 			while gArray.count > 1 do
 			(
 				/* Convert to Editable Poly if it's not already */
 				if classof gArray[j] != Editable_Poly then converttopoly gArray[j]
-					
+				
 				polyop.attach gArray[j] gArray[j+1]
 				deleteItem gArray (j+1)
-					
+				
 				j += 1
-					
+				
 				if (j + 1) > gArray.count then j = 1
 			)
 			
