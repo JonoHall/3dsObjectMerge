@@ -1,0 +1,3 @@
+[submodule "progress-bar"]
+	path = progress-bar
+	url = https://gist.github.com/JonoHall/5b5e1e2d86187a117d4f1de7b094f341
