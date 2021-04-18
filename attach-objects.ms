@@ -4,11 +4,11 @@ Loop through our new associated array and group all the values (objects) in each
 Credit: ivanisavich
 Source: https://forums.cgsociety.org/t/fast-attach-algorithm/1459667
 */
-function combineObjects groups mergeTag:false =
+function attachChildren parents mergeTag:false =
 (
 	progressBarIteration = 0
 	
-	for g in groups do(
+	for g in parents do(
 		gArray = g.value as Array
 		j = 1
 		
@@ -34,13 +34,13 @@ function combineObjects groups mergeTag:false =
 			if mergeTag == false then
 			(
 				gArray[j].name = g.key as String
+				setUserProp gArray[j] "orig_parent_name" (g.key as string)
 			) else (
 				gName = (g.key as String) + " [new]"
 				gArray[j].name = gName
 			)
 			
-			setUserProp gArray[j] "orig_parent_name" (g.key as string)
-			ProgressBarTool.SetProgress value:(progressBarIteration += 1) count:groups.count message:("Current group: "+g.key)
+			ProgressBarTool.SetProgress value:(progressBarIteration += 1) count:parents.count message:("Current group: "+g.key)
 		)
 	)
 )
