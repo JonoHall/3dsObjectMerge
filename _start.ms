@@ -1,25 +1,24 @@
-allObjects = $*
-parents = Dictionary()
-children = Dictionary()
-
 FileIn("progress-bar\progress-bar.ms")
-FileIn("attach-objects.ms")
-FileIn("initialise.ms")
-FileIn("dialog-box.ms")
 
-Initialise()
-
-if allObjects.count == 0 then
-(
-	messageBox "Empty file, not sure what you want me to do?" title:"No objects in file" beep:true
-) else (
-	difference = allObjects.count - parents.count
-	if parents.count > 0 then
+rollout startDialog "Attach Objects" (
+	
+	label lab1 "Step 1: Attach objects with similar names." align:#left offset:[0,10]
+	button startAttach "Attach Objects" width:120 height:30 align:#left
+	label lab2 "Step 2: Merge files that have been through the attach step." align:#left offset:[0,10]
+	button startMerge "Merge Files" width:120 height:30 align:#left
+	label lab3
+	
+	on startAttach pressed do
 	(
-		createDialog attachObjectsDialog width:600
-		attachObjectsDialog.parentCount.text = parents.count as String
-		attachObjectsDialog.objectCount.text = difference as String
-	) else (
-		messageBox "Can't find any objects with similar names." title:"No attachable objects" beep:true
+		DestroyDialog(startDialog)
+		filein("attach-objects\_start.ms")
+	)
+	
+	on startMerge pressed do
+	(
+		DestroyDialog(startDialog)
+		filein("merge-replace\_start.ms")
 	)
 )
+
+CreateDialog startDialog width:600
