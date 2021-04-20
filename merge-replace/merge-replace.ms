@@ -26,20 +26,33 @@ fn deleteFaces obj =
 
 function matchAndReplace mergeObjects =
 (
+	copyMergeObjects = #()
+	for obj in mergeObjects do(
+		append copyMergeObjects obj.handle
+	)
+
 	countMerge = 0
 	countNoMatch = 0
-	for obj in mergeObjects do(
-		match = originalNames[obj.name as name]
+	
+	for i = mergeObjects.count to 1 by -1 do
+	(
+		print "i="
+		print i
+		print "mergeObjects[i]"
+		print mergeObjects[i]
+		match = originalNames[mergeObjects[i].name as name]
+		print "match"
+		print match
 		if match != undefined then
 		(
 			oldObj =maxOps.getNodeByHandle match
 			deleteFaces oldObj
 			oldObjName = oldObj.name
-			polyop.attach obj oldObj
-			obj.name = oldObjName
+			polyop.attach mergeObjects[i] oldObj
+			mergeObjects[i].name = oldObjName
 			countMerge += 1
 		) else (
-			obj.name = (obj.name + " [new]")
+			mergeObjects[i].name = (mergeObjects[i].name + " [new]")
 			countNoMatch += 1
 		)
 	)
