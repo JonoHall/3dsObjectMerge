@@ -41,8 +41,11 @@ function attachChildren parents =
 			*/
 			keyName = (g.key as String)
 			gArray[j].name = keyName
-			setUserProp gArray[j] "orig_parent_name" (g.key as string)
+			gArray[j].displaybylayer = true
+			gArray[j].motionByLayer = true
+			gArray[j].renderByLayer = true
 			
+			setUserProp gArray[j] "orig_parent_name" (g.key as string)
 			ProgressBarTool.SetProgress value:(progressBarIteration += 1) count:parents.count message:("Current group: "+g.key)
 		)
 	)
