@@ -1,3 +1,21 @@
+function cleanName oldName =
+(
+	validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	
+	s = ""
+	for i = 1 to oldName.count do
+	(
+		if (oldName[i] == " " or oldName[i] == "-") then 
+		(
+			s += "_"
+		) else (
+			char = oldName[i] as String
+			if findString validChars char != undefined then s += char
+		)
+	)
+	s
+)
+
 /* 
 Loop through our new associated array and group all the values (objects) in each key 
 
@@ -39,8 +57,11 @@ function attachChildren parents =
 			keyName = g.key as String
 			if appendText != "" then keyName = keyName + appendText
 			*/
-			keyName = (g.key as String)
-			gArray[j].name = keyName
+			oldKeyName = g.key as String
+			newKeyName = cleanName oldKeyName
+			newKeyName = ("SM_" + appendTextVal + "_" + newKeyName)
+			gArray[j].name = newKeyName as Name
+			
 			gArray[j].displayByLayer = true
 			gArray[j].motionByLayer = true
 			gArray[j].renderByLayer = true
