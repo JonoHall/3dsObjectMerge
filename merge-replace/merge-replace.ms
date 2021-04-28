@@ -43,8 +43,8 @@ function matchAndReplace mergeObjects =
 			oldObj =maxOps.getNodeByHandle match
 			deleteFaces oldObj
 			oldObjName = oldObj.name
-			polyop.attach mergeObjects[i] oldObj
-			mergeObjects[i].name = oldObjName
+			polyop.attach oldObj mergeObjects[i]
+			/* mergeObjects[i].name = oldObjName */
 			countMerge += 1
 		) else (
 			mergeObjects[i].name = (mergeObjects[i].name + " [new]")
