@@ -40,6 +40,11 @@ function attachChildren parents =
 		/* Turns undo off for performance optimisation */
 		undo off
 		(
+			if gArray.count == 1 do
+			(
+				/* Convert to Editable Poly if it's not already */
+				if classof gArray[1] != Editable_Poly then converttopoly gArray[j]
+			)
 			while gArray.count > 1 do
 			(
 				/* Convert to Editable Poly if it's not already */
