@@ -18,8 +18,8 @@ rollout mergeReplace "Merge and Replace Objects" (
 	)
 	on confirmMergeReplace pressed do
 	(
+		DestroyDialog(mergeReplace)
 		mergeMAXFile mergeReplace.filename.text #mergeDups #select
 		matchAndReplace selection
-		DestroyDialog(mergeReplace)
 	)
 )
