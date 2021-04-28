@@ -36,13 +36,8 @@ function matchAndReplace mergeObjects =
 	
 	for i = mergeObjects.count to 1 by -1 do
 	(
-		print "i="
-		print i
-		print "mergeObjects[i]"
-		print mergeObjects[i]
-		match = originalNames[mergeObjects[i].name as name]
-		print "match"
-		print match
+		matchName = (getUserProp mergeObjects[i] "orig_parent_name") as name
+		match = originalNames[matchName]
 		if match != undefined then
 		(
 			oldObj =maxOps.getNodeByHandle match
